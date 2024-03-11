@@ -1,0 +1,23 @@
+{% extends "base_teacher.html" %}
+{% block title %}User Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-4">{{ user.username }}'s Dashboard</h2>
+  <section>
+    <h3 class="mb-3">Posts:</h3>
+    {% if posts %}
+      {% for post in posts %}
+      <div class="card mb-3">
+        <div class="card-body">
+          <p class="card-text">{{ post.content }}</p>
+          <p class="card-text"><small class="text-muted">{{ post.created_at }}</small></p>
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <p>No posts available.</p>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

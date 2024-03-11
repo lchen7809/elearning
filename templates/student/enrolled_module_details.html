@@ -1,0 +1,36 @@
+{% extends "base_student.html" %}
+{% block title %}Enrolled Module Details{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid mt-4 px-0 px-md-3">
+  <h2>Module Details</h2>
+
+  <div>
+    <h3>{{ module.title }}</h3>
+    
+    {% if module.image %}
+      <img src="{{ module.image.url }}" alt="{{ module.title }} Image" class="img-fluid" style="max-width: 30%; height: auto;">
+    {% else %}
+      <img src="{{ STATIC_URL }}media/no_img_avail.jpeg" alt="No Image Available" class="img-fluid" style="max-width: 100%; height: auto;">
+    {% endif %}
+    
+    <p>{{ module.content }}</p>
+    <p>Teacher: {{ module.teacher.first_name }} {{ module.teacher.last_name }}</p>
+
+    {% if module.media_files.all %}
+      <h4>Module Files:</h4>
+      <ul>
+        {% for media_file in module.media_files.all %}
+          <li>
+            <a href="{{ media_file.file.url }}" target="_blank">{{ media_file.file.name }}</a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>No module files available.</p>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

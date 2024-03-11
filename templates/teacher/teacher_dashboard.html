@@ -1,0 +1,101 @@
+{% extends "base_teacher.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+
+Hi {{ user.username }}!
+You are at the Teacher dashboard
+
+<br><br>
+<section>
+    <label for="search_query" class="h5">Search for users</label>
+    <form method="GET" action="{% url 'search_results' %}" class="input-group mb-3">
+      <input type="text" name="search_query" class="form-control" placeholder="Search users..." id="search_query" aria-label="Search users">
+      <button class="btn btn-outline-secondary" type="submit" id="button-addon2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+          <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.099zm-5.742 3.156a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/>
+        </svg>
+        Search
+      </button>
+    </form>
+  </section>
+  
+<br><br>
+<section>
+    <form id="postForm" class="mb-4">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="content" class="h5">What do you want to post today?</label>
+            <textarea class="form-control" name="content" id="content" rows="3" placeholder="Share your thoughts..."></textarea>
+        </div>
+        <div class="form-group text-right">
+            <button type="submit" class="btn btn-primary">Post</button>
+        </div>
+    </form>
+</section>
+<section>
+    <h3>Your Posts:</h3>
+    <div id="postsList">
+        <!-- Posts will be added here by JavaScript -->
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('postForm');
+        const postsList = document.getElementById('postsList');
+    
+        function addPostToUI(post) {
+            const postElement = document.createElement('div');
+            postElement.classList.add('card', 'mb-3'); 
+            postElement.style.padding = '0 15px'; 
+            const date = new Date(post.created_at); //assuming post.created_at is in an acceptable format
+            const displayDate = date.toLocaleString(); //formats the date to a readable string
+            
+            postElement.innerHTML = `
+                <div class="card-body">
+                    <p class="card-text">${post.content}</p>
+                    <p class="card-text"><small class="text-muted">${displayDate}</small></p>
+                </div>`;
+            postsList.prepend(postElement); //adds the new post element to the DOM
+            console.log("Post created_at:", post.created_at);
+        }
+
+        //submitting the new post
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(form);
+            fetch('api/posts/', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                },
+                credentials: 'same-origin'
+            }).then(response => response.json())
+            .then(data => {
+                console.log(data);
+                //update UI with the new post
+                addPostToUI(data);
+                form.reset(); //resets the form fields after successful submission
+            }).catch(error => console.error('Error:', error));
+        });
+    
+        //fetching and displaying existing posts
+        fetch('api/posts/')
+            .then(response => response.json())
+            .then(data => {
+                console.log("Received data:", data);
+                data.forEach(post => {
+                    addPostToUI(post);
+                });
+            }).catch(error => console.error('Error:', error));
+    });
+</script>
+
+{% endif %}
+
+{% endblock %}

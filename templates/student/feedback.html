@@ -1,0 +1,29 @@
+{% extends "base_student.html" %}
+{% block title %}Feedback{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid mt-4 px-0 px-md-3">
+  <h2 class="mb-4">Feedback Form</h2>
+
+  <form method="post" class="mb-4">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Submit Feedback</button>
+  </form>
+
+  <h2 class="mb-3">Your Feedbacks</h2>
+  {% for feedback in feedbacks %}
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">{{ feedback.user.username }} - {{ feedback.module.title }}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Date posted: {{ feedback.created_at }}</h6>
+        <p class="card-text">{{ feedback.content }}</p>
+      </div>
+    </div>
+  {% empty %}
+    <p>No feedbacks available.</p>
+  {% endfor %}
+</div>
+
+{% endblock %}

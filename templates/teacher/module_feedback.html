@@ -1,0 +1,24 @@
+{% extends "base_teacher.html" %}
+{% block title %}Feedback By Students{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+  <h2 class="mb-4">Feedbacks for {{ module.title }}</h2>
+
+  {% if feedbacks %}
+    <div class="list-group">
+      {% for feedback in feedbacks %}
+        <div class="list-group-item mb-3">
+          <h5 class="mb-1">{{ feedback.user.username }}</h5>
+          <p class="mb-1"><small>Date posted: {{ feedback.created_at|date:"Y-m-d H:i" }}</small></p>
+          <p>{{ feedback.content }}</p>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>No Feedbacks for now</p>
+  {% endif %}
+</div>
+
+{% endblock %}

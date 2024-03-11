@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>User Profile</h2>
+
+  <div class="text-center mb-4">
+    <img src="{% if user_profile.profile_photo %}{{ user_profile.profile_photo.url }}{% else %}/media/default.png{% endif %}" alt="Profile Photo" class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover;">
+  </div>
+
+  <form id="profileForm" enctype="multipart/form-data" class="mb-4">
+      {% csrf_token %}
+      <div class="mb-3">
+        <input type="file" name="profile_photo" id="profile_photo" class="form-control">
+      </div>
+      <button type="submit" class="btn btn-primary">Upload Photo</button>
+  </form>
+
+  <!-- displaying profile information -->
+  <div class="profile-info">
+    <p>Username: <span id="username"></span></p>
+    <p>Email: <span id="email"></span></p>
+    <p>First Name: <span id="first_name"></span></p>
+    <p>Last Name: <span id="last_name"></span></p>
+    <p>Date of Birth: <span id="dob"></span></p>
+    <p>User Type: <span id="user_type"></span></p>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('profileForm');
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(form);
+        const csrfToken = '{{ csrf_token }}'; 
+
+        fetch('/accounts/api/profile/', {
+            method: 'PUT',
+            body: formData,
+            headers: {
+                'X-CSRFToken': csrfToken,
+            },
+            credentials: 'same-origin'
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            alert('Profile updated successfully!');
+            window.location.reload();
+        })
+        .catch(error => console.error('Error:', error));
+    });
+
+    fetch('/accounts/api/profile/')
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);
+        document.getElementById('username').textContent = data.user_username; 
+        document.getElementById('email').textContent = data.email;
+        document.getElementById('first_name').textContent = data.first_name;
+        document.getElementById('last_name').textContent = data.last_name;
+        document.getElementById('dob').textContent = data.dob;
+        document.getElementById('user_type').textContent = data.user_type;
+        if (data.profile_photo) {
+            document.querySelector('img').src = data.profile_photo;
+        }
+    });
+});
+</script>
+
+{% endblock %}

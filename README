@@ -1,0 +1,22 @@
+How to run the application:
+
+Navigate to this file: cd e_learning
+Create virtual environment: python3 -m venv myvenv 
+Activate virtual environment: source myvenv/bin/activate 
+Install requirements.txt : pip install -r requirements.txt
+Run migrations: python3 manage.py makemigrations 
+Run migrations: python3 manage.py migrate 
+Run unit test: python manage.py test accounts.tests
+Run server: python3 manage.py runserver 
+Open http://127.0.0.1:8000/ (homepage)
+
+
+//superuser//
+username: superuser
+password: simplep@ss
+
+
+
+
+
+

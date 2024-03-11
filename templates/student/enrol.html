@@ -1,0 +1,42 @@
+{% extends "base_student.html" %}
+{% block title %}Enrol{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4 px-0 px-md-4">
+  <h2 class="mb-4">Available Modules</h2>
+
+  <div class="row" id="modulesContainer">
+    <!-- Module cards will be dynamically injected here -->
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    fetch('/accounts/api/enrol/')
+    .then(response => response.json())
+    .then(data => {
+        const modulesContainer = document.getElementById('modulesContainer');
+        //clear previous content
+        modulesContainer.innerHTML = '';
+
+        //iterate over each module and create HTML content
+        data.forEach(module => {
+            const moduleElement = document.createElement('div');
+            moduleElement.className = 'col-md-4 mb-4';
+            moduleElement.innerHTML = `
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h3 class="card-title">${module.title}</h3>
+                        <img src="${module.image ? module.image : '/media/no_img_avail.jpeg'}" alt="${module.title} Image" class="img-fluid" style="object-fit: cover; height: 200px;">
+                        <a href="/accounts/enrol/${module.title}/" class="btn btn-primary mt-3 d-block">View Details and Enrol</a>
+                    </div>
+                </div>
+            `;
+            modulesContainer.appendChild(moduleElement);
+        });
+    })
+    .catch(error => console.error('Error:', error));
+});
+</script>
+
+{% endblock %}

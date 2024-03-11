@@ -1,0 +1,12 @@
+{% extends "base_teacher.html" %}
+{% block title %}Add new module{% endblock %}
+
+
+{% block content %}
+  <h2>Add New Course</h2>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Add Course</button>
+  </form>
+{% endblock %}

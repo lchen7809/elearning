@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Modules{% endblock %}
+
+{% block content %}
+<label for="content" class="h5">Notifications</label>
+
+<div class="container my-4">
+  {% for notification in notifications %}
+  <div class="card mb-3">
+    <div class="card-body">
+      <a href="{{ notification.item_url }}" class="stretched-link" style="text-decoration: none; color: inherit;">
+        {% if notification.notification_type == 'new_course' %}
+          <p class="card-text">{{ notification.sender_name }} just added {{ notification.item_title }}</p>
+        {% elif notification.notification_type == 'new_enrollment' %}
+          <p class="card-text">{{ notification.sender_name }} enrolled into {{ notification.item_title }}</p>
+        {% endif %}
+      </a>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}
